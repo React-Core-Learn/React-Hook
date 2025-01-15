@@ -3,7 +3,7 @@
 황준일님의 useState Hooks 만들기를 참고하여, 훅 작성 규칙 및 클로저를 어떤 식으로 활용할 수 있을지 이해와 고민하자. 또한, useState뿐 아니라, useCallback, useMemo, useEffect를 어떤 식으로 구현할 수 있을지도 생각해보자.
 
 > [!NOTE]
-> 위 4가지의 hooks을 만들었다면, useRef도 해보자!
+> useState, useEffect, useCallback, useMemo를 구현했다면, 추가적으로 useRef도 구현해보자!
 
 - 구현하면서 느낀 점들을 작성하며 회고하자.
 - Hooks의 규칙에 대해 이해하자.
