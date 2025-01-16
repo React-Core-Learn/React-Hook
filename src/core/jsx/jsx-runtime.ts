@@ -1,4 +1,3 @@
-import { internals } from "../sharedInternals"
 import type { Type, VDOM, Props, VNode } from "./jsx-runtime.type"
 import { isNullOrUndefined, isPrimitive } from "./jsx-runtime.utils"
 
@@ -12,6 +11,7 @@ function createElement(node: VNode) {
   }
 
   if (isPrimitive(node)) {
+    console.log(node)
     return document.createTextNode(String(node))
   }
 
@@ -61,12 +61,12 @@ function updateAttributes(element: HTMLElement, newProps: Props = {}, oldProps: 
 }
 
 export function updateElement(parent: HTMLElement, newNode?: VNode, oldNode?: VNode, index: number = 0) {
-  if (!newNode && oldNode) {
+  if (isNullOrUndefined(newNode) && oldNode) {
     parent.removeChild(parent.childNodes[index])
     return
   }
 
-  if (newNode && !oldNode) {
+  if (newNode && isNullOrUndefined(oldNode)) {
     parent.appendChild(createElement(newNode))
     return
   }
