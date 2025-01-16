@@ -1,5 +1,5 @@
 import type { Type, VDOM, Props, VNode } from "./jsx-runtime.type"
-import { isNullOrUndefined, isPrimitive } from "./jsx-runtime.utils"
+import { isNullOrUndefined, isPrimitive, isVDOM, isDiffText } from "./jsx-runtime.utils"
 
 function h(type: Type, props: Props, ...children: VNode[]): VDOM {
   return { type, props: props || {}, children: children.flat() }
@@ -71,7 +71,7 @@ export function updateElement(parent: HTMLElement, newNode?: VNode, oldNode?: VN
     return
   }
 
-  if (diffText(newNode, oldNode)) {
+  if (isDiffText(newNode, oldNode)) {
     parent.replaceChild(createElement(newNode), parent.childNodes[index])
     return
   }
@@ -92,16 +92,6 @@ export function updateElement(parent: HTMLElement, newNode?: VNode, oldNode?: VN
   for (let i = 0; i < maxLength; i++) {
     updateElement(parent.childNodes[index] as HTMLElement, newNode.children[i], oldNode.children[i], i)
   }
-}
-
-function isVDOM(node: VNode) {
-  return typeof node === "object" && node !== null
-}
-
-function diffText(newNode: VNode, oldNode: VNode) {
-  if (JSON.stringify(newNode) === JSON.stringify(oldNode)) return false
-  if (typeof newNode === "object" || typeof oldNode === "object") return false
-  return true
 }
 
 export { h, createElement }
