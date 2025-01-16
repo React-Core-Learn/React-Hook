@@ -486,7 +486,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debug@npm:4, debug@npm:^4.3.4":
+"debug@npm:4, debug@npm:^4.1.1, debug@npm:^4.3.4":
   version: 4.4.0
   resolution: "debug@npm:4.4.0"
   dependencies:
@@ -686,6 +686,13 @@ __metadata:
   bin:
     glob: dist/esm/bin.mjs
   checksum: 10c0/19a9759ea77b8e3ca0a43c2f07ecddc2ad46216b786bb8f993c445aee80d345925a21e5280c7b7c6c59e860a0154b84e4b2b60321fea92cd3c56b4a7489f160e
+  languageName: node
+  linkType: hard
+
+"globrex@npm:^0.1.2":
+  version: 0.1.2
+  resolution: "globrex@npm:0.1.2"
+  checksum: 10c0/a54c029520cf58bda1d8884f72bd49b4cd74e977883268d931fd83bcbd1a9eb96d57c7dbd4ad80148fb9247467ebfb9b215630b2ed7563b2a8de02e1ff7f89d1
   languageName: node
   linkType: hard
 
@@ -1037,6 +1044,7 @@ __metadata:
   dependencies:
     typescript: "npm:~5.6.2"
     vite: "npm:^6.0.5"
+    vite-tsconfig-paths: "npm:^5.1.4"
   languageName: unknown
   linkType: soft
 
@@ -1274,6 +1282,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tsconfck@npm:^3.0.3":
+  version: 3.1.4
+  resolution: "tsconfck@npm:3.1.4"
+  peerDependencies:
+    typescript: ^5.0.0
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  bin:
+    tsconfck: bin/tsconfck.js
+  checksum: 10c0/5120e91b3388574b449d57d08f45d05d9966cf4b9d6aa1018652c1fff6d7d37b1ed099b07e6ebf6099aa40b8a16968dd337198c55b7274892849112b942861ed
+  languageName: node
+  linkType: hard
+
 "typescript@npm:~5.6.2":
   version: 5.6.3
   resolution: "typescript@npm:5.6.3"
@@ -1309,6 +1331,22 @@ __metadata:
   dependencies:
     imurmurhash: "npm:^0.1.4"
   checksum: 10c0/d324c5a44887bd7e105ce800fcf7533d43f29c48757ac410afd42975de82cc38ea2035c0483f4de82d186691bf3208ef35c644f73aa2b1b20b8e651be5afd293
+  languageName: node
+  linkType: hard
+
+"vite-tsconfig-paths@npm:^5.1.4":
+  version: 5.1.4
+  resolution: "vite-tsconfig-paths@npm:5.1.4"
+  dependencies:
+    debug: "npm:^4.1.1"
+    globrex: "npm:^0.1.2"
+    tsconfck: "npm:^3.0.3"
+  peerDependencies:
+    vite: "*"
+  peerDependenciesMeta:
+    vite:
+      optional: true
+  checksum: 10c0/6228f23155ea25d92b1e1702284cf8dc52ad3c683c5ca691edd5a4c82d2913e7326d00708cef1cbfde9bb226261df0e0a12e03ef1d43b6a92d8f02b483ef37e3
   languageName: node
   linkType: hard
 
