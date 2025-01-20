@@ -2,6 +2,7 @@ import type { Type, VDOM, Props, VNode } from "./jsx-runtime.type"
 import { isNullOrUndefined, isPrimitive, isVDOM, isDiffText } from "./jsx-runtime.utils"
 
 function h(type: Type, props: Props, ...children: VNode[]): VDOM {
+  if (typeof type === "function") return type(props)
   return { type, props: props || {}, children: children.flat() }
 }
 
@@ -11,11 +12,10 @@ function createElement(node: VNode) {
   }
 
   if (isPrimitive(node)) {
-    console.log(node)
     return document.createTextNode(String(node))
   }
 
-  const element = document.createElement(node.type)
+  const element = document.createElement(node.type as keyof HTMLElementTagNameMap)
 
   setAttribute(element, node.props)
   node.children.map(createElement).forEach((child) => element.appendChild(child))
@@ -28,6 +28,10 @@ function setAttribute(element: HTMLElement, props: Props) {
     .filter(([_, value]) => value)
     .forEach(([attr, value]) => {
       if (attr.startsWith("on") && typeof props[attr] === "function") {
+        if (attr === "onChange") {
+          element.addEventListener("input", props[attr])
+        }
+
         const eventType = attr.slice(2).toLowerCase()
         element.addEventListener(eventType, props[attr])
       }
