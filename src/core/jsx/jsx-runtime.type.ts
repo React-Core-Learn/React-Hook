@@ -1,4 +1,4 @@
-export type Type = keyof HTMLElementTagNameMap
+export type Type = keyof HTMLElementTagNameMap | Component
 
 export type Props = Record<string, any>
 
