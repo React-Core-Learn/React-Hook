@@ -1,7 +1,7 @@
 // import { useState } from "./core/hooks"
 import { render } from "./core/client"
-import Counter from "./components/Counter"
+import Main from "./pages/main"
 
 const rootElement = document.getElementById("app")! as HTMLDivElement
 
-render(rootElement, Counter)
+render(rootElement, Main)
