@@ -1,4 +1,3 @@
-// import { useState } from "./core/hooks"
 import { render } from "./core/client"
 import Main from "./pages/main"
 
