@@ -1,4 +1,4 @@
-import { useState, useEffect } from "@/core/hooks"
+import { useEffect, useState } from "@/core/hooks"
 import "./Counter.css"
 
 export default function Counter() {
