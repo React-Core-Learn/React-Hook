@@ -1,4 +1,4 @@
-import { useState } from "@/core/hooks"
+import { useState, useEffect } from "@/core/hooks"
 import "./Counter.css"
 
 export default function Counter() {
@@ -6,6 +6,11 @@ export default function Counter() {
 
   const handleIncrease = () => setCount(count + 1)
   const handleDecrease = () => setCount(count - 1)
+
+  useEffect(() => {
+    const setupCount = () => setCount(100)
+    setupCount()
+  }, [])
 
   return (
     <div className="count-wrapper">
