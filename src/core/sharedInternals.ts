@@ -6,6 +6,7 @@ interface Internals {
   rootComponent: null | Component
   rootElement: null | HTMLElement
   currentVDOM: null | VNode
+  effectList: (() => void)[]
 }
 
 /**
@@ -17,4 +18,5 @@ export const internals: Internals = {
   rootComponent: null,
   rootElement: null,
   currentVDOM: null,
+  effectList: [],
 }
