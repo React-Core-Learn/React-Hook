@@ -1,9 +1,7 @@
 import { internals } from "../sharedInternals"
+import { Callback, Dependencies } from "./hooks.type"
 
-type UseEffectCallback = (...args: any[]) => void
-type UseEffectDep = any[]
-
-export function useEffect(callback: UseEffectCallback, dependencies?: UseEffectDep) {
+export function useEffect(callback: Callback, dependencies?: Dependencies) {
   const currentIndex = internals.currentHookIndex
   const oldDependencies = internals.hooks[currentIndex]
   let hasChanged = true
