@@ -1,5 +1,6 @@
 import { useEffect, useState } from "@/core/hooks"
 import "./Counter.css"
+import { useCallback } from "@/core/hooks/useCallback"
 
 export default function Counter() {
   const [count, setCount] = useState(1)
@@ -20,3 +21,5 @@ export default function Counter() {
     </div>
   )
 }
+
+// const handleIncrease = useCallback(() => setCount(count + 1), [])
