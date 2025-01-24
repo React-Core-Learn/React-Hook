@@ -21,5 +21,3 @@ export default function Counter() {
     </div>
   )
 }
-
-// const handleIncrease = useCallback(() => setCount(count + 1), [])
