@@ -6,6 +6,6 @@ export default defineConfig({
   esbuild: {
     jsx: "transform",
     jsxFactory: "h",
-    jsxInject: `import { h, createElement } from '@/core/jsx'`,
+    jsxInject: `import { h } from '@/core/jsx'`,
   },
 })
