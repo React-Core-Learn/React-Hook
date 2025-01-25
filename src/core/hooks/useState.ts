@@ -10,11 +10,29 @@ export function useState<T>(initialState: T) {
       return
     }
 
-    internals.hooks[currentIndex] = newState
-    reRender()
+    const addBatchQueue = () => {
+      internals.hooks[currentIndex] = newState
+    }
+
+    internals.batchQueue.push(addBatchQueue)
+    scheduleBatch()
   }
 
   internals.currentHookIndex++
 
   return [state, setState]
+}
+
+function flushBatchQueue() {
+  internals.batchQueue.forEach((fn) => fn())
+  internals.batchQueue = []
+  reRender()
+  internals.isBatching = false
+}
+
+function scheduleBatch() {
+  if (!internals.isBatching) {
+    internals.isBatching = true
+    queueMicrotask(flushBatchQueue)
+  }
 }

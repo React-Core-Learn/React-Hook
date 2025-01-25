@@ -5,8 +5,8 @@ import { useCallback } from "@/core/hooks/useCallback"
 export default function Counter() {
   const [count, setCount] = useState(1)
 
-  const handleIncrease = useCallback(() => setCount(count + 1), [count])
-  const handleDecrease = useCallback(() => setCount(count - 1), [count])
+  const handleIncrease = () => setCount(count + 1)
+  const handleDecrease = () => setCount(count - 1)
 
   useEffect(() => {
     const setupCount = () => setCount(100)

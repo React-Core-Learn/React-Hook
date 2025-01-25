@@ -7,6 +7,8 @@ interface Internals {
   rootElement: null | HTMLElement
   currentVDOM: null | VNode
   effectList: (() => void)[]
+  isBatching: boolean
+  batchQueue: (() => void)[]
 }
 
 /**
@@ -19,4 +21,6 @@ export const internals: Internals = {
   rootElement: null,
   currentVDOM: null,
   effectList: [],
+  isBatching: false,
+  batchQueue: [],
 }
