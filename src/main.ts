@@ -49,7 +49,7 @@ const { useState, render } = MyReact();
 
 function CounterAndMeow() {
   const [count, setCount] = useState(1);
-  const [cat, setCat] = useState('야용!');
+  const [cat, setCat] = useState('야옹!');
 
   function countMeow(newCount: number) {
     setCount(newCount);
@@ -57,7 +57,9 @@ function CounterAndMeow() {
   }
 
   window.increment = () => countMeow(count + 1);
-  window.decrement = () => countMeow(count - 1);
+  window.decrement = () => {
+    if (count > 0) countMeow(count - 1);
+  };
 
   return `
   <div>
