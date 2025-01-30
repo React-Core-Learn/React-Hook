@@ -38,11 +38,27 @@ export default function MyReact() {
     options.renderCount += 1;
   });
 
+  function useEffect(callback: () => void, dependencies: any[]) {
+    const { currentStateKey: key, states } = options;
+    const oldDependencies = states[key];
+
+    let hasChanged = true;
+    if (oldDependencies) {
+      hasChanged = dependencies.some((dependency, index) => dependency !== oldDependencies[index]);
+    }
+    if (hasChanged) {
+      callback();
+      states[key] = dependencies;
+    }
+
+    options.currentStateKey += 1;
+  }
+
   function render(rootComponent: any, root: Element | null) {
     options.root = root;
     options.rootComponent = rootComponent;
     _render();
   }
 
-  return { useState, render };
+  return { useState, useEffect, render };
 }
