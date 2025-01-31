@@ -44,7 +44,7 @@ export default function MyReact() {
 
     let hasChanged = true;
     if (oldDependencies) {
-      hasChanged = dependencies.some((dependency, index) => dependency !== oldDependencies[index]);
+      hasChanged = dependencies.some((dependency, index) => !Object.is(dependency, oldDependencies[index]));
     }
     if (hasChanged) {
       callback();
@@ -54,11 +54,47 @@ export default function MyReact() {
     options.currentStateKey += 1;
   }
 
+  // function useCallback<T extends (...arg: any[]) => any>(fn: T, dependencies: any[]) {
+  //   let cachedFn: T | null = null;
+  //   let cachedDependencies: any[] | null = null;
+
+  //   const hasChanged =
+  //     cachedDependencies === null ||
+  //     dependencies.length !== cachedDependencies.length ||
+  //     dependencies.some((dependency, index) => !Object.is(dependency, cachedDependencies[index]));
+
+  //   if (hasChanged) {
+  //     cachedFn = fn;
+  //     cachedDependencies = dependencies;
+  //   }
+
+  //   return cachedFn || fn;
+  // }
+
+  function useCallback<T extends (...arg: any[]) => any>(fn: T, dependencies: any[]) {
+    const { currentStateKey: key, states } = options;
+    const oldDependencies = states[key]?.dependencies;
+
+    let hasChanged = true;
+    if (oldDependencies) {
+      hasChanged =
+        dependencies.length !== oldDependencies.length ||
+        dependencies.some((dep, index) => !Object.is(dep, oldDependencies[index]));
+    }
+
+    if (hasChanged) {
+      states[key] = { fn, dependencies };
+    }
+
+    options.currentStateKey += 1;
+    return states[key].fn;
+  }
+
   function render(rootComponent: any, root: Element | null) {
     options.root = root;
     options.rootComponent = rootComponent;
     _render();
   }
 
-  return { useState, useEffect, render };
+  return { useState, useEffect, useCallback, render };
 }
