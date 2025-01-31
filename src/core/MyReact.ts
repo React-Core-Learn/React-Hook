@@ -38,7 +38,7 @@ export default function MyReact() {
     options.renderCount += 1;
   });
 
-  function useEffect(callback: () => void, dependencies: any[]) {
+  function useEffect<T extends (...arg: any[]) => any>(callback: T, dependencies: any[]) {
     const { currentStateKey: key, states } = options;
     const oldDependencies = states[key];
 
@@ -71,7 +71,7 @@ export default function MyReact() {
   //   return cachedFn || fn;
   // }
 
-  function useCallback<T extends (...arg: any[]) => any>(fn: T, dependencies: any[]) {
+  function useCallback<T extends (...arg: any[]) => any>(callback: T, dependencies: any[]) {
     const { currentStateKey: key, states } = options;
     const oldDependencies = states[key]?.dependencies;
 
@@ -83,11 +83,32 @@ export default function MyReact() {
     }
 
     if (hasChanged) {
-      states[key] = { fn, dependencies };
+      states[key] = { callback, dependencies };
     }
 
     options.currentStateKey += 1;
     return states[key].fn;
+  }
+
+  function useMemo<T extends (...arg: any[]) => any>(callback: T, dependencies: any[]) {
+    const { currentStateKey: key, states } = options;
+    const [oldDependencies, oldMenuValue] = states[key] || [];
+
+    let hasChanged = true;
+    let memoValue = oldMenuValue;
+
+    if (oldDependencies) {
+      hasChanged = dependencies.some((dependency, index) => !Object.is(dependency, oldDependencies[index]));
+    }
+
+    if (hasChanged) {
+      memoValue = callback();
+      states[key] = [dependencies, memoValue];
+    }
+
+    options.currentStateKey += 1;
+
+    return memoValue;
   }
 
   function render(rootComponent: any, root: Element | null) {
@@ -96,5 +117,5 @@ export default function MyReact() {
     _render();
   }
 
-  return { useState, useEffect, useCallback, render };
+  return { useState, useEffect, useCallback, useMemo, render };
 }
