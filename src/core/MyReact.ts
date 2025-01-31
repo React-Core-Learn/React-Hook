@@ -1,24 +1,32 @@
 import debounceFrame from '../utils/debounceFrame';
 
 interface Options {
-  currentStateKey: number;
   renderCount: number;
-  states: any[];
+  componentStateMap: Map<any, { states: any[]; currentStateKey: number }>;
   root: Element | null;
   rootComponent: any;
 }
 
 export default function MyReact() {
   const options: Options = {
-    currentStateKey: 0,
     renderCount: 0,
-    states: [],
+    componentStateMap: new Map(),
     root: null,
     rootComponent: null,
   };
 
+  function getComponentState(component: any) {
+    if (!options.componentStateMap.has(component)) {
+      options.componentStateMap.set(component, { states: [], currentStateKey: 0 });
+    }
+    return options.componentStateMap.get(component)!;
+  }
+
   function useState(initState: any) {
-    const { currentStateKey: key, states } = options;
+    const component = options.rootComponent;
+    const componentState = getComponentState(component);
+    const { currentStateKey: key, states } = componentState;
+
     if (states.length === key) states.push(initState);
 
     const state = states[key];
@@ -26,7 +34,8 @@ export default function MyReact() {
       states[key] = newState;
       _render();
     };
-    options.currentStateKey += 1;
+
+    componentState.currentStateKey += 1;
     return [state, setState];
   }
 
@@ -34,48 +43,39 @@ export default function MyReact() {
     const { root, rootComponent } = options;
     if (!root || !rootComponent) return;
     root.innerHTML = rootComponent();
-    options.currentStateKey = 0;
+
+    options.componentStateMap.forEach(state => (state.currentStateKey = 0));
+
     options.renderCount += 1;
   });
 
   function useEffect<T extends (...arg: any[]) => any>(callback: T, dependencies: any[]) {
-    const { currentStateKey: key, states } = options;
-    const oldDependencies = states[key];
+    const component = options.rootComponent;
+    const componentState = getComponentState(component);
+    const { currentStateKey: key, states } = componentState;
 
+    const oldDependencies = states[key];
     let hasChanged = true;
+
     if (oldDependencies) {
-      hasChanged = dependencies.some((dependency, index) => !Object.is(dependency, oldDependencies[index]));
+      hasChanged = dependencies.some((dep, index) => !Object.is(dep, oldDependencies[index]));
     }
     if (hasChanged) {
       callback();
       states[key] = dependencies;
     }
 
-    options.currentStateKey += 1;
+    componentState.currentStateKey += 1;
   }
 
-  // function useCallback<T extends (...arg: any[]) => any>(fn: T, dependencies: any[]) {
-  //   let cachedFn: T | null = null;
-  //   let cachedDependencies: any[] | null = null;
-
-  //   const hasChanged =
-  //     cachedDependencies === null ||
-  //     dependencies.length !== cachedDependencies.length ||
-  //     dependencies.some((dependency, index) => !Object.is(dependency, cachedDependencies[index]));
-
-  //   if (hasChanged) {
-  //     cachedFn = fn;
-  //     cachedDependencies = dependencies;
-  //   }
-
-  //   return cachedFn || fn;
-  // }
-
   function useCallback<T extends (...arg: any[]) => any>(callback: T, dependencies: any[]) {
-    const { currentStateKey: key, states } = options;
-    const oldDependencies = states[key]?.dependencies;
+    const component = options.rootComponent;
+    const componentState = getComponentState(component);
+    const { currentStateKey: key, states } = componentState;
 
+    const oldDependencies = states[key]?.dependencies;
     let hasChanged = true;
+
     if (oldDependencies) {
       hasChanged =
         dependencies.length !== oldDependencies.length ||
@@ -86,19 +86,21 @@ export default function MyReact() {
       states[key] = { callback, dependencies };
     }
 
-    options.currentStateKey += 1;
-    return states[key].fn;
+    componentState.currentStateKey += 1;
+    return states[key].callback;
   }
 
-  function useMemo<T extends (...arg: any[]) => any>(callback: T, dependencies: any[]) {
-    const { currentStateKey: key, states } = options;
-    const [oldDependencies, oldMenuValue] = states[key] || [];
+  function useMemo<T>(callback: () => T, dependencies: any[]) {
+    const component = options.rootComponent;
+    const componentState = getComponentState(component);
+    const { currentStateKey: key, states } = componentState;
 
+    const [oldDependencies, oldMemoValue] = states[key] || [];
     let hasChanged = true;
-    let memoValue = oldMenuValue;
+    let memoValue = oldMemoValue;
 
     if (oldDependencies) {
-      hasChanged = dependencies.some((dependency, index) => !Object.is(dependency, oldDependencies[index]));
+      hasChanged = dependencies.some((dep, index) => !Object.is(dep, oldDependencies[index]));
     }
 
     if (hasChanged) {
@@ -106,8 +108,7 @@ export default function MyReact() {
       states[key] = [dependencies, memoValue];
     }
 
-    options.currentStateKey += 1;
-
+    componentState.currentStateKey += 1;
     return memoValue;
   }
 
@@ -119,3 +120,21 @@ export default function MyReact() {
 
   return { useState, useEffect, useCallback, useMemo, render };
 }
+
+// state를 외부에서 관리하지 않아 계속 초기화 문제 발생
+// function useCallback<T extends (...arg: any[]) => any>(fn: T, dependencies: any[]) {
+//   let cachedFn: T | null = null;
+//   let cachedDependencies: any[] | null = null;
+
+//   const hasChanged =
+//     cachedDependencies === null ||
+//     dependencies.length !== cachedDependencies.length ||
+//     dependencies.some((dependency, index) => !Object.is(dependency, cachedDependencies[index]));
+
+//   if (hasChanged) {
+//     cachedFn = fn;
+//     cachedDependencies = dependencies;
+//   }
+
+//   return cachedFn || fn;
+// }
